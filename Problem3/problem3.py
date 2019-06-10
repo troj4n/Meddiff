@@ -1,6 +1,5 @@
 #log_parser
 import re
-
 src_file=open('sample_log.txt','r')
 error_file=open("error_file.txt",'w+') #+ for new fle creation if not laready present
 seek=0

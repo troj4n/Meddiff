@@ -1,6 +1,7 @@
 # coding: utf-8
 # Your code here!
 #Using Python 2.7
+
 def check_palindrome(s):
     s=str(s).lower()
     if (s==s[::-1]):

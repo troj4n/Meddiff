@@ -8,6 +8,5 @@ def group_by_owners(d):
     return op
 
 
-
 dictionary = {'Input.txt': 'Randy', 'Code.py': 'Stan', 'Output.txt': 'Randy'}
 print group_by_owners(dictionary)
