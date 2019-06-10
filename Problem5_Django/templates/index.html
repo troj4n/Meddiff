@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student App</title>
+    <h1/><center/>Student Details
+</head>
+<style>#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}</style>
+<body>
+
+<form action="/Student/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>
+</form>
+
+</body>
+<div id="footer">{{ today }}</div>
+
+</html>
