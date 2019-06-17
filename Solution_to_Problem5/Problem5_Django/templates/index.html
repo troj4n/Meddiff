@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+{% block content %}
+
+<html lang="en">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<style>
+
+	#leftdiv
+	{
+		margin-top: 10px;
+		color: #000;
+		height: 400px;
+		width: 48%;
+		float: left;
+	}
+	#rightdiv
+	{
+        margin-top: 10px;
+		color: #000;
+		height: 400px;
+		width: 48%;
+		float: right;
+	}
+</style>
+<script>
+
+$(function() {
+jQuery(document).on('click', "#insert", function(){
+var name=document.getElementById("name").value;
+var age=document.getElementById("age").value;
+var roll=document.getElementById("roll").value;
+var gender=document.getElementById("gender").value;
+alert("Are you sure ?");
+  event.preventDefault();
+$.ajax({
+        type: 'POST',
+        url: "{% url 'Student:insert' %}",
+        data: {
+          'name[]': name ,'age[]': age ,'roll[]': roll ,'gender[]': gender ,'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType: 'json',
+        success: function (data) {
+          if (data.is_taken) {
+            alert("A user with this username already exists.");
+          }
+        }
+      });
+
+  });
+
+});
+</script>
+
+<!-- for display -->
+<script>
+$(function() {
+jQuery(document).on('click', "#display", function(){
+event.preventDefault();
+var myNode = document.getElementById("mytable");
+myNode.innerHTML = '';
+$.ajax({
+        type: 'POST',
+        url: "{% url 'Student:display' %}",
+        data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType: 'json',
+        success: function (data) {
+            console.log(data)
+            for (var x in data) {
+                $row = $('<tr></tr>');
+                $row.append('<td>' + data[x].name + '</td>');
+                $row.append('<td>' + data[x].age + '</td>');
+                $row.append('<td>' + data[x].roll + '</td>');
+                $row.append('<td>' + data[x].gender + '</td>');
+                // repeat the above line for each data item
+                $('#mytable').append($row);
+            }
+
+        }
+      });
+  });
+});
+</script>
+
+<!--for delete-->
+
+<script>
+$(function() {
+
+jQuery(document).on('click', "#rolltodelete", function(){
+event.preventDefault();
+
+var rolltodeleteinput=document.getElementById("rolltodeleteinput").value;
+
+$.ajax({
+        type: 'POST',
+        url: "{% url 'Student:delete' %}",
+        data: {'roll[]': rolltodeleteinput,'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType: 'json',
+        success: function (data) {
+
+            alert("User deleted successfully")
+        }
+      });
+  });
+});
+</script>
+
+<!-- for search -->
+<script>
+$(function() {
+
+jQuery(document).on('click', "#search", function(){
+event.preventDefault();
+var myNode = document.getElementById("mytable1");
+myNode.innerHTML = '';
+var search=document.getElementById("searchbar").value;
+
+$.ajax({
+        type: 'POST',
+        url: "{% url 'Student:search' %}",
+        data: {'search[]': search,'csrfmiddlewaretoken': '{{ csrf_token }}'},
+        dataType: 'json',
+        success: function (data) {
+            for (var x in data) {
+                $row = $('<tr></tr>');
+                $row.append('<td>' + data[x].name + '</td>');
+                $row.append('<td>' + data[x].age + '</td>');
+                $row.append('<td>' + data[x].roll + '</td>');
+                $row.append('<td>' + data[x].gender + '</td>');
+                // repeat the above line for each data item
+                $('#mytable1').append($row);
+            }
+
+        }
+      });
+  });
+});
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Student App</title>
+    <h1/><center/>Student Details
+</head>
+<style>#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}</style>
+
+
+
+
+<div id="insertdiv" style="width: 100%;display: block; float: left; padding-right:5px;outline: 2px dashed black;">
+<form  method="post">
+{% csrf_token %}
+     Student Name:
+<input class="form-control"  name="name" type="text" data-role="tagsinput" id="name" required>
+  Age:
+<input class="form-control"  name="age" type="number" data-role="tagsinput" id="age" required>
+  Roll No:
+<input class="form-control"  name="roll" type="number" data-role="tagsinput" id="roll" required>
+Gender:
+<select name="gender" required>
+  <option value="Male" id="gender">Male</option>
+  <option value="Female" id="gender">Female</option>
+  <option value="Others" id="gender">Others</option>
+</select>
+    <button id="insert" type="submit" value="Submit" name="Add">Add</button>
+</form>
+</div>
+
+<!-- retrieving the users-->
+<div id="masterdiv" style="width: 100%;display: inline; float: left; padding-right:5px;outline: 2px dashed black;margin-top:60px;">
+<form  method="post">
+{% csrf_token %}
+Display All users:
+    <button id="display" type="submit" value="Submit" name="display">Display</button>
+</form>
+
+<!-- deleting the users-->
+<form  method="post">
+{% csrf_token %}
+Delete by Roll No:
+<input class="form-control"  name="rolltodeleteinput" type="text" data-role="tagsinput" id="rolltodeleteinput">
+    <button id="rolltodelete" type="submit" value="Submit" name="delete">Delete</button>
+</form>
+
+<!--searching the users -->
+<form  method="post">
+{% csrf_token %}
+Search by Name:
+<input class="form-control"  name="searchbar" type="text" data-role="tagsinput" id="searchbar">
+    <button id="search" type="submit" value="Submit" name="search">Search</button>
+</form>
+</div>
+
+<div id="outerdiv">
+<div id="leftdiv">
+    Display Results:
+    <table id="mytable" rules="all"></table></div>
+
+<div id="rightdiv">
+    Search Results:
+    <table id="mytable1" rules="all"></table></div>
+
+</div>
+<div id="messagediv"></div>
+</body>
+
+</html>
+
+
+
+{% endblock %}
